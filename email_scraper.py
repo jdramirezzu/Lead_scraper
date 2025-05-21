@@ -78,7 +78,7 @@ def segmentar_negocio(business: Business) -> str:
 
 
 if __name__ == "__main__":
-    resultados = scrape_google_maps("marketing", "Ontario", max_results=5)
+    resultados = scrape_google_maps("agencia de marketing", "Bogotá", max_results=5)
 
     for negocio in resultados:
         negocio.emails = (

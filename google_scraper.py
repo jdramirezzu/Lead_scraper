@@ -14,6 +14,10 @@ class Business:
     rating: Optional[float] = None
     reviews_count: Optional[int] = None
     reviews: Optional[List[str]] = None
+    emails: Optional[List[str]] = None
+    lead_score: Optional[int] = None
+    reputacion: Optional[str] = None
+    segmento: Optional[str] = None
 
 
 def scrape_google_maps(
@@ -150,7 +154,7 @@ def scrape_google_maps(
 
 
 if __name__ == "__main__":
-    resultados = scrape_google_maps("libreria", "Bogotá", max_results=3)
+    resultados = scrape_google_maps("agencia de marketing", "Bogotá", max_results=5)
     for negocio in resultados:
         print("🟢 Negocio encontrado:")
         print(f"  Nombre         : {negocio.name}")
