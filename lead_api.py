@@ -4,6 +4,8 @@ import json
 import os
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from google_scraper import Business
 
 app = FastAPI()
@@ -15,6 +17,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve frontend static files
+app.mount("/static", StaticFiles(directory="."), name="static")
+
+
+@app.get("/", response_class=HTMLResponse)
+def read_index():
+    """Return the bundled frontend page"""
+    return FileResponse("index.html")
 
 
 @app.get("/scrape")

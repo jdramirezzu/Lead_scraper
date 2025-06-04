@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell } from '@/components/ui/table';
+/**
+ * Simple dashboard component to query the FastAPI backend.
+ * This version avoids external UI libraries so it can run directly
+ * using React from a CDN and Babel.
+ */
+const { useState } = React;
 
-export default function LeadDashboard() {
+function LeadDashboard() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState('agencia de marketing');
   const [location, setLocation] = useState('Bogotá');
@@ -12,52 +13,65 @@ export default function LeadDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const res = await fetch(`http://localhost:8000/scrape?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
-    const json = await res.json();
-    setData(json);
-    setLoading(false);
+    try {
+      const res = await fetch(
+        `http://localhost:8000/scrape?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`
+      );
+      const json = await res.json();
+      setData(json);
+    } catch (err) {
+      console.error(err);
+      alert('Error al obtener datos');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard de Leads</h1>
-
-      <div className="mb-4 flex gap-2">
-        <Input value={query} onChange={e => setQuery(e.target.value)} placeholder="Categoría" />
-        <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Ciudad" />
-        <Button onClick={fetchData} disabled={loading}>{loading ? 'Cargando...' : 'Buscar'}</Button>
+    <div>
+      <h1>Dashboard de Leads</h1>
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Categoría"
+        />
+        <input
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Ciudad"
+          style={{ marginLeft: '4px' }}
+        />
+        <button onClick={fetchData} disabled={loading} style={{ marginLeft: '4px' }}>
+          {loading ? 'Cargando...' : 'Buscar'}
+        </button>
       </div>
-
-      <Card>
-        <CardContent>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Nombre</TableHeaderCell>
-                <TableHeaderCell>Teléfono</TableHeaderCell>
-                <TableHeaderCell>Email</TableHeaderCell>
-                <TableHeaderCell>Rating</TableHeaderCell>
-                <TableHeaderCell>Reputación</TableHeaderCell>
-                <TableHeaderCell>Score</TableHeaderCell>
-                <TableHeaderCell>Segmento</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((lead, i) => (
-                <TableRow key={i}>
-                  <TableCell>{lead.name}</TableCell>
-                  <TableCell>{lead.phone}</TableCell>
-                  <TableCell>{lead.emails?.join(', ')}</TableCell>
-                  <TableCell>{lead.rating}</TableCell>
-                  <TableCell>{lead.reputacion}</TableCell>
-                  <TableCell>{lead.lead_score}</TableCell>
-                  <TableCell>{lead.segmento}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <table border="1" cellPadding="6">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Rating</th>
+            <th>Reputación</th>
+            <th>Score</th>
+            <th>Segmento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((lead, i) => (
+            <tr key={i}>
+              <td>{lead.name}</td>
+              <td>{lead.phone || ''}</td>
+              <td>{(lead.emails || []).join(', ')}</td>
+              <td>{lead.rating || ''}</td>
+              <td>{lead.reputacion || ''}</td>
+              <td>{lead.lead_score || ''}</td>
+              <td>{lead.segmento || ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
