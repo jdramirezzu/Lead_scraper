@@ -1,7 +1,8 @@
-from playwright.sync_api import sync_playwright, TimeoutError
+from playwright.sync_api import sync_playwright
 from dataclasses import dataclass
 from typing import List, Optional
 import re
+from urllib.parse import quote_plus
 
 
 @dataclass
@@ -23,7 +24,11 @@ class Business:
 def scrape_google_maps(
     query: str, location: str, max_results: int = 10
 ) -> List[Business]:
-    search_url = f"https://www.google.com/maps/search/{query}+{location}/"
+
+    search_url = (
+        "https://www.google.com/maps/search/"
+        f"{quote_plus(query)}+{quote_plus(location)}/"
+    )
     businesses = []
 
     with sync_playwright() as p:
