@@ -44,8 +44,8 @@ Este proyecto es un MVP de un producto SaaS para generar y analizar leads extra�
 
 ### Frontend (UI)
 
-* React con Vite
-* Tailwind CSS + shadcn/ui
+* React cargado desde CDN
+* Interfaz sencilla en `index.html`
 * Conecta al endpoint de backend
 
 ---
@@ -74,58 +74,11 @@ uvicorn lead_api:app --reload
 
 ### 2. Frontend
 
-#### Crear app React
+El proyecto incluye un archivo `index.html` que utiliza React desde CDN. No
+requiere instalación de dependencias de Node. La API de FastAPI ahora sirve
+este archivo automáticamente en la ruta raíz.
 
-```bash
-npm create vite@latest
-cd nombre-del-proyecto
-npm install
-```
-
-#### Instalar Tailwind CSS
-
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-#### Configurar Tailwind:
-
-* `tailwind.config.js`
-
-```js
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-
-* `src/index.css`
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-* Asegúrate de importar `./index.css` en `main.jsx`
-
-#### Agrega componente:
-
-* `lead_dashboard.jsx` debe estar en `src/`
-* Conecta al endpoint local `http://localhost:8000/scrape`
-
-#### Ejecutar frontend
-
-```bash
-npm run dev
-```
+Una vez el servidor esté corriendo visita `http://localhost:8000/` en tu navegador.
 
 ---
 
@@ -140,7 +93,7 @@ npm run dev
 ## 🧪 Test rápido
 
 1. Backend corriendo → `http://localhost:8000/scrape?query=panaderia&location=Medellin`
-2. Frontend en `http://localhost:5173`
+2. Abrir `http://localhost:8000/` en el navegador
 3. Resultado: leads en tiempo real con reputación y contacto.
 
 ---
